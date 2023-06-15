@@ -27,18 +27,7 @@ namespace EmployeeService.Models
         
     }
 
-    public class Punctuality {
-        public int EmployeeId { get; set;} 
-        public int Present { get; set; }
-        public int Absent { get; set; }
-        public int excused { get; set; }
-        public DateTime Period { get; set; }
-    }
-
-    public enum Bonus {
-        Punctuality = 10000,
-        Performance = 20000
-    }
+  
 }
 
 

@@ -11,10 +11,23 @@ The services adopt the use of separate in-memory database for storage and proces
 gateway service uses microsoft sql database mssql for authentication data persistence.
 
 
-
 * Requirements * 
-The services run in containers, so it can only run on operating system with docker desktop installed.
-The entire solution use Dotnet core 6.
+Docker desktop
+Dotnet core 6
+RabbitMQ
+Sql server
+
 
 Launching the services:
-After cloning the repo to the local system , run docker-compose up
+2 options:
+First - Run locally without countainer:
+- Clone to local system
+- Restore dependency (if not automatic)
+- docker run -it --rm --name payrol_rabbitmq -p 5673:5673 -p 15673:15673 rabbitmq:3.7-management
+- docker run -d --name payrol_mssql -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=Password10$' -p 1433:1433 -d mcr.microsoft.com/mssql/server:2019-latest
+- Build and run => http://localhost:63487/swagger/index.html
+
+Second - Run locally with countainer:
+- Clone to local system
+- Restore dependency (if not automatic)
+- run docker-compose up  => http://localhost:63487/swagger/index.html

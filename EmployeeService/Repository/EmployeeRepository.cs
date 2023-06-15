@@ -9,7 +9,6 @@ using EmployeeService.Dto;
 using EmployeeService.Repositories;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using EmployeeService.SyncDataServices.Http;
 
 namespace EmployeeService.Repository
 {
@@ -17,40 +16,19 @@ namespace EmployeeService.Repository
     {
         private new readonly ApplicationContext _context;
         private readonly IConfiguration _configuration;
-        private readonly IMapper _mapper;
-        private readonly IAuthenticationDataClient _httpAuthClient;
-
-        //ApplicationContext context = new ApplicationContext();
+        private readonly IMapper _mapper; 
 
         public EmployeeRepository(
             ApplicationContext context,
             IConfiguration configuration,
-            IAuthenticationDataClient httpAuthClient,
             IMapper mapper
             )
             : base(context)
         {
             _context = context;
             _configuration = configuration;
-            _httpAuthClient = httpAuthClient;
             _mapper = mapper;
-        }
-
-         public async Task<object?> GetTestUser()
-        {
-            // Send Sync Message
-            try
-            {
-                var response = await _httpAuthClient.GetTestUserFromAuthenticationService();
-                return response;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"--> Could not send synchronously: {ex.Message}");
-            }
-
-            return null;
-        }
+        }       
 
         public async Task<EmployeeDto?> getEmployee(int id)
         {
@@ -70,9 +48,8 @@ namespace EmployeeService.Repository
 
             // var employee = await _context.Employees.FirstOrDefaultAsync(u => u.Id == id);
             // return _mapper.Map<EmployeeDto>(employee);
-        }    
+        } 
 
-      
         public async Task<bool> upsertEmployee(EmployeeDto data, int id)
         {
             var employee = await _context.Employees.FirstOrDefaultAsync(e => e.Id == id);
@@ -136,7 +113,6 @@ namespace EmployeeService.Repository
 
             var allEmployee = await _context.Employees.ToListAsync();
             return _mapper.Map<IEnumerable<EmployeeDto>>(allEmployee);
-
         }
 
         public async Task<EmployeeDto?> Delete(int id)

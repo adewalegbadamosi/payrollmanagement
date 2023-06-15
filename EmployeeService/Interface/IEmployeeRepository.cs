@@ -11,8 +11,7 @@ using System.Threading.Tasks;
 namespace EmployeeService.Interface
 {
     public interface IEmployeeRepository :  IGenericRepository<Employee>
-    {
-        Task<object?> GetTestUser();
+    {        
         Task<EmployeeDto?> getEmployee(int id);
 
         Task<IEnumerable<EmployeeDto>> GetAllEmployee();
