@@ -1,0 +1,51 @@
+version: '3.4'
+
+services:
+  gatewayservice:    
+    build:
+      context: .
+      dockerfile: Gatewayservice/Dockerfile
+    depends_on: 
+      - rabbit
+      - mssql
+
+  salaryservice:    
+    build:
+      context: .
+      dockerfile: SalaryService/Dockerfile
+    depends_on: 
+      - rabbit
+
+  employeeservice:
+    image: ${DOCKER_REGISTRY-}employeeservice
+    build:
+      context: .
+      dockerfile: EmployeeService/Dockerfile
+    depends_on: 
+      - rabbit
+  
+  rabbit:
+    image: rabbitmq:3.7-management
+    container_name: coraly_rabbitmq
+    ports:
+      - "15672:15672"
+    volumes:
+      - rabbitmq-data:/data
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    restart: unless-stopped
+    container_name: payrol_mssql
+    environment:
+      SA_PASSWORD: "Password10$"
+      ACCEPT_EULA: "Y"
+    ports: 
+      - 1433:1433
+    volumes:
+      - mssql-data:/var/lib/mssql/data
+
+volumes:
+  mssql-data:
+  rabbitmq-data:
+
+
