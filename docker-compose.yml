@@ -32,7 +32,7 @@ services:
     image: rabbitmq:3.7-management
     container_name: payrol_rabbitmq
     ports:
-      - "15673:15673"
+      - "15673:15672"
     volumes:
       - rabbitmq-data:/data
 

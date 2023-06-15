@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using GatewayService.Dto;
 using Newtonsoft.Json;
+using System;
 
 namespace SalaryService.Repository
 {
@@ -57,10 +58,12 @@ namespace SalaryService.Repository
             decimal computedSalary;            
             var currentYear = DateTime.Now.Year.ToString();            
             
-            var periodSalary = await EmployeeSalaryByPeriod(data.EmployeeId, data.Month, data.Year) ;
-       
+            var periodSalary = await _context.Salaries.FirstOrDefaultAsync(u =>
+               u.EmployeeId == data.EmployeeId && u.Year == data.Year && u.Month.ToLower() == data.Month.ToLower()
+           );
+
             if (periodSalary != null){
-                return periodSalary.salary.GrossSalary;
+                return periodSalary.GrossSalary;
             }else {
                 computedSalary = data.DailyPay * data.DaysWorked + data.Bonus - data.TaxDeduction;
                 
