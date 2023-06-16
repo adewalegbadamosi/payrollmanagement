@@ -19,7 +19,7 @@ Sql server
 visual studio
 
 
-Launching the services:
+* Launching the service  *
 2 options:
 First - Run locally without countainer:
 - Clone to local system
