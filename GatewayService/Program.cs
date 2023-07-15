@@ -174,7 +174,7 @@ app.UseSwaggerUI(c =>
 
 app.MapControllers();
 
-// UpdateDatabase.Initialize(app);
+UpdateDatabase.Initialize(app);
 
 app.Run();
 

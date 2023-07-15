@@ -1,0 +1,2 @@
+CREATE DATABASE [Finance]
+GO

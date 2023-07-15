@@ -1,52 +1,82 @@
 version: '3.4'
 
+networks:
+  payrol_network:
+
 services:
   gatewayservice:    
     build:
-      context: .
-      dockerfile: Gatewayservice/Dockerfile
+      context: ./
+      dockerfile: ./GatewayService/Dockerfile
     container_name: payrol_gateway 
     ports:
-      - 63487:63487   
+      - 63487:80    
     depends_on: 
       - rabbit
       - mssql
+    environment:
+      - DB_HOST=mssql
+      - DB_PASS=Password10$$
+      - DB=Finance
+      - RABBITMQ_HOST=rabbit
+    volumes:
+      - ./GatewayService:/app/GatewayService
+    networks:
+      - payrol_network
 
   salaryservice:    
     build:
-      context: .
-      dockerfile: SalaryService/Dockerfile
+      context: ./
+      dockerfile: ./SalaryService/Dockerfile
     container_name: payrol_salary    
     depends_on: 
-      - rabbit
+      - rabbit   
+    # volumes:
+    #   - ./SalaryService:/app/SalaryService
+    networks:
+      - payrol_network
+    environment:
+      - RABBITMQ_HOST=rabbit
 
   employeeservice:    
     build:
-      context: .
-      dockerfile: EmployeeService/Dockerfile
+      context: ./
+      dockerfile: ./EmployeeService/Dockerfile
     container_name: payrol_employee    
     depends_on: 
       - rabbit
+    environment:
+      - RABBITMQ_HOST=rabbit        
+    volumes:
+      - ./EmployeeService:/app/EmployeeService
+    networks:
+      - payrol_network
   
   rabbit:
     image: rabbitmq:3.7-management
     container_name: payrol_rabbitmq
     ports:
       - "15673:15672"
+      - "5673:5672"
     volumes:
       - rabbitmq-data:/data
+    networks:
+      - payrol_network
 
   mssql:
     image: mcr.microsoft.com/mssql/server:2019-latest
     restart: unless-stopped
     container_name: payrol_mssql
     environment:
-      SA_PASSWORD: "Password10$"
-      ACCEPT_EULA: "Y"
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Password10$$
     ports: 
       - 1433:1433
     volumes:
       - mssql-data:/var/lib/mssql/data
+      - ./db-init.sql:/docker-entrypoint-initdb.d/db-init.sql:rw
+    networks:
+      - payrol_network
 
 volumes:
   mssql-data:
